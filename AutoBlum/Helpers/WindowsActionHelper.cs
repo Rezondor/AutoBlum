@@ -35,6 +35,14 @@ public static class WindowsActionHelper
         public int Y;
     }
 
+    public static void ClickAtPosition(int x, int y)
+    {
+        SetCursorPos(x, y);
+        mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, 0);
+        mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, 0);
+    }
+
     public const uint MOUSEEVENTF_LEFTDOWN = 0x02;
     public const uint MOUSEEVENTF_LEFTUP = 0x04;
+
 }

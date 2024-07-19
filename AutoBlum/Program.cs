@@ -6,8 +6,6 @@ namespace AutoBlum;
 
 internal class Program
 {
-   
-
     static async Task Main()
     {
         string windowName = "TelegramDesktop";
@@ -58,7 +56,7 @@ internal class Program
             }
 
             sw.Stop();
-            Console.WriteLine($"Билет - {i+1}| Окончание");
+            Console.WriteLine($"Билет - {i + 1}| Окончание");
 
         }
     }
@@ -69,14 +67,14 @@ internal class Program
         var screenshotRow = TakeScreenshot(leftX, topY, rightX, bottomY);
         Bitmap screenshot = screenshotRow.bitmap;
 
-        for (int y = screenshot.Height - 30; y >= 0; y-=5)
+        for (int y = screenshot.Height - 30; y >= 0; y -= 5)
         {
             if (isBreakThisIter)
             {
                 break;
             }
 
-            for (int x = 0; x < screenshot.Width; x+=5)
+            for (int x = 0; x < screenshot.Width; x += 5)
             {
                 if (isBreakThisIter)
                 {
@@ -109,10 +107,5 @@ internal class Program
         return (bitmap, g);
     }
 
-    static void ClickAtPosition(int x, int y)
-    {
-        SetCursorPos(x, y);
-        mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, 0);
-        mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, 0);
-    }
+
 }
