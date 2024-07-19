@@ -1,44 +1,12 @@
 ﻿using AutoBlum.Helpers;
 using System.Diagnostics;
 using System.Drawing;
-using System.Runtime.InteropServices;
+using static AutoBlum.Helpers.WindowsActionHelper;
 namespace AutoBlum;
 
 internal class Program
 {
-    [DllImport("user32.dll")]
-    static extern bool SetCursorPos(int X, int Y);
-
-    [DllImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetCursorPos(out POINT lpPoint);
-
-    [DllImport("user32.dll")]
-    static extern void mouse_event(uint dwFlags, int dx, int dy, uint dwData, int dwExtraInfo);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-    [DllImport("user32.dll")]
-    private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-    public struct RECT
-    {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
-    {
-        public int X;
-        public int Y;
-    }
-
-    const uint MOUSEEVENTF_LEFTDOWN = 0x02;
-    const uint MOUSEEVENTF_LEFTUP = 0x04;
+   
 
     static async Task Main()
     {
@@ -98,8 +66,9 @@ internal class Program
     private static bool SearchPixelAndClick(int leftX, int topY, int rightX, int bottomY, Func<Color, bool> isColor)
     {
         bool isBreakThisIter = false;
-        (Bitmap, Graphics) screenshotRow = TakeScreenshot(leftX, topY, rightX, bottomY);
-        Bitmap screenshot = screenshotRow.Item1;
+        var screenshotRow = TakeScreenshot(leftX, topY, rightX, bottomY);
+        Bitmap screenshot = screenshotRow.bitmap;
+
         for (int y = screenshot.Height - 30; y >= 0; y-=5)
         {
             if (isBreakThisIter)
@@ -125,12 +94,12 @@ internal class Program
                 }
             }
         }
-        screenshotRow.Item2.Dispose();
-        screenshotRow.Item1.Dispose();
+        screenshotRow.bitmap.Dispose();
+        screenshotRow.graphics.Dispose();
         return isBreakThisIter;
     }
 
-    static (Bitmap, Graphics) TakeScreenshot(int leftX, int topY, int rightX, int bottomY)
+    static (Bitmap bitmap, Graphics graphics) TakeScreenshot(int leftX, int topY, int rightX, int bottomY)
     {
         int width = rightX - leftX;
         int height = bottomY - topY;
