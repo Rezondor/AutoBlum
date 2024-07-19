@@ -69,7 +69,7 @@ internal class Program
 
         Console.Read();
 
-        int repeatInSecond = 8;
+        int repeatInSecond = 50;
         int delay = 1000 / repeatInSecond;
 
         for (int i = 0; i < ticketCount; i++)
@@ -96,16 +96,16 @@ internal class Program
     private static bool SearchPixelAndClick(int leftX, int topY, int rightX, int bottomY, Func<Color, bool> isColor)
     {
         bool isBreakThisIter = false;
-        Bitmap screenshot = TakeScreenshot(leftX, topY, rightX, bottomY);
-
-        for (int y = screenshot.Height - 30; y >= 0; y--)
+        (Bitmap, Graphics) screenshotRow = TakeScreenshot(leftX, topY, rightX, bottomY);
+        Bitmap screenshot = screenshotRow.Item1;
+        for (int y = screenshot.Height - 30; y >= 0; y-=5)
         {
             if (isBreakThisIter)
             {
                 break;
             }
 
-            for (int x = 0; x < screenshot.Width; x++)
+            for (int x = 0; x < screenshot.Width; x+=5)
             {
                 if (isBreakThisIter)
                 {
@@ -123,18 +123,19 @@ internal class Program
                 }
             }
         }
-
+        screenshotRow.Item2.Dispose();
+        screenshotRow.Item1.Dispose();
         return isBreakThisIter;
     }
 
-    static Bitmap TakeScreenshot(int leftX, int topY, int rightX, int bottomY)
+    static (Bitmap, Graphics) TakeScreenshot(int leftX, int topY, int rightX, int bottomY)
     {
         int width = rightX - leftX;
         int height = bottomY - topY;
         Bitmap bitmap = new Bitmap(width, height);
         Graphics g = Graphics.FromImage(bitmap);
         g.CopyFromScreen(leftX, topY, 0, 0, new Size(width, height));
-        return bitmap;
+        return (bitmap, g);
     }
 
     static bool IsGreen(Color color)
