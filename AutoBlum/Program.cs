@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using AutoBlum.Helpers;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 namespace AutoBlum;
@@ -76,14 +77,15 @@ internal class Program
         {
             Console.WriteLine($"Билет - {i + 1}| Начало");
 
-            SearchPixelAndClick(leftX, topY, rightX, bottomY, IsRed);
+            SearchPixelAndClick(leftX, topY, rightX, bottomY, ColorHelper.IsRed);
+
             await Task.Delay(20);
 
             Stopwatch sw = Stopwatch.StartNew();
 
             while (sw.Elapsed.TotalSeconds < 40)
             {
-                SearchPixelAndClick(leftX, topY, rightX, bottomY, IsGreen);
+                SearchPixelAndClick(leftX, topY, rightX, bottomY, ColorHelper.IsGreen);
                 await Task.Delay(delay);
             }
 
@@ -136,22 +138,6 @@ internal class Program
         Graphics g = Graphics.FromImage(bitmap);
         g.CopyFromScreen(leftX, topY, 0, 0, new Size(width, height));
         return (bitmap, g);
-    }
-
-    static bool IsGreen(Color color)
-    {
-        return
-            color.R > 199 && color.R < 210 &&
-            color.G > 210 && color.G < 230 &&
-            color.B == 0;
-    }
-
-    static bool IsRed(Color color)
-    {
-        return
-            color.R > 240 && color.R < 256 &&
-            color.G > 100 && color.G < 115 &&
-            color.B > 110 && color.B < 140 ;
     }
 
     static void ClickAtPosition(int x, int y)
